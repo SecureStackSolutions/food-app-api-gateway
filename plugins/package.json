@@ -1,0 +1,12 @@
+{
+    "name": "application-gateway",
+    "version": "1.0.0",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "preinstall": "npm install ./user-authentication/ ./strip-path"
+    },
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^16.0.3"
+    }
+  }

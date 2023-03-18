@@ -3,38 +3,37 @@
 const axios = require('axios');
 
 class UserAuthentication {
+    ID_TOKEN_KEY = 'id-token';
+    KONG_AUTH_KEY = 'kong-key-auth';
+
     constructor(config) {
         this.config = config;
     }
 
     async access(kong) {
         try {
-            console.log(await kong.request.getHeaders());
-            const authenticationToken = await kong.request.getHeader(
-                'authentication-token'
-            );
+            const idToken = await kong.request.getHeader(this.ID_TOKEN_KEY);
 
             const response = await axios.get(
-                `http://application-gateway:8000/authenticate/authenticate`,
+                `http://application-gateway:8000/access-control/authenticate`,
                 {
                     headers: {
-                        'authentication-token': authenticationToken,
-                        'kong-key-auth': 'mykey',
+                        ID_TOKEN_KEY: idToken,
+                        KONG_AUTH_KEY: 'mykey',
                     },
                 }
             );
 
-            const authenticationTokenPayload =
-                response.data.extras.authenticationTokenPayload;
+            const userId = response.data.extras;
 
             await kong.service.request.setBody({
                 ...(await kong.request.getBody()),
-                _extras: { authenticationTokenPayload },
+                _extras: { userId },
             });
 
             // await kong.service.request.setHeader(
             //     'authentication-token-payload',
-            //     JSON.stringify(authenticationTokenPayload)
+            //     JSON.stringify(idTokenPayload)
             // );
         } catch (err) {
             // if (err.request) {

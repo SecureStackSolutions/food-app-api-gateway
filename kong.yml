@@ -2,8 +2,8 @@ _format_version: '3.0'
 _transform: true
 
 services:
-    - host: user-authentication-upstream
-      name: user-authentication-service
+    - host: access-control-upstream
+      name: access-control-service
       protocol: http
       plugins:
           - name: key-auth
@@ -18,14 +18,14 @@ services:
       routes:
           - name: authenticate
             paths:
-                - /authenticate
+                - /access-control/authenticate
             strip_path: true
             preserve_host: true
 
 upstreams:
-    - name: user-authentication-upstream
+    - name: access-control-upstream
       targets:
-          - target: backend-user-authentication:49200
+          - target: access-control-server:49200
             weight: 100
 
 plugins:
@@ -36,6 +36,6 @@ plugins:
     - name: strip-path
 
 consumers:
-    - username: authApi
+    - username: admin
       keyauth_credentials:
           - key: mykey

@@ -1,4 +1,5 @@
 FROM kong
+
 USER root
 COPY kong.yml /home/kong/kong.yml
 
